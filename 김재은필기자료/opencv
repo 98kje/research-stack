@@ -1,0 +1,102 @@
+cv2.imread(filename,flags=None) 
+파이썬에서 이미지를 불러올때
+기본 None 은 컬러를 출력한다.
+
+img(변수명)= cv2.imread('파일네임',cv2.IMREAD_COROR) 컬러형태로 불러오기
+cv2.IMREAD_GRAYSCALE  // 흑백으로 불러오기
+cv2.IMREAD_UNCHANGED  영상파일속성 스대로읽기 투명한 PNG파일
+
+이후 꼭 if img is None: 이라는 예외처리 코드 필요.
+불러온 영상데이터는 (numpy.ndarray) 
+
+cv2.imwrite('filename',img(변수이름),params=None) 
+
+cv2.IMWRITE_JPEG_QUALITY,90 : 이건 파일 압축률을 90%로 지정
+
+retval = 정상저장되면 True 실패는 False
+=======================================================================
+
+cv2.namewindow(winname, flags=None)
+
+winname 창 고유 이름(문자열)
+flags 창 속성 지정 플래그로 
+cv2.WINDOW_NORMAL 영상크기를 창 크기에 맞게 지정
+cv2.WINDOW_AUTOSIZE 창 크기를 영상 크기에 맞게 변경(기본값)
+
+=======================================================================
+cv2.destroyWindow(winname) ->None
+cv2.destroyALLWindow() -> None
+
+winname : 닫고자 하는 창 이름
+참고사항 -
+cv2.destroyWindow() 함수는 지정한 창 하나만 닫고, cv2.destroyAllWindows()함수는 열려 있는 창을 모두 닫음.
+일반적인 경우는 프로그램 종료 시 운영 체제에 의해 열려 있는 모든 창이 자동으로 닫힘.
+즉, 함수를 이용하여 코드를 돌릴때 이 창을 닫고싶으면 중간에 집어넣는거
+
+=============================================================================
+cv2.moveWindow(winname,x,y) -> None
+winname 창이름
+x,y : 이동할 위치 좌표
+
+===================================================================================
+cv2.resizeWindow(winname, width, height) -None
+winname : 창이름
+width : 변경할 창의 가로크기
+height : 변경할 창의 세로크기
+
+참고사항 
+창 생성시 cv2.WINDOW_NOMAL 속성으로 생성되어야 동작함. //이떄가 창을 마음대로 드래그로 변경가능한 상태.
+영상 출력 부분의 크기만을 고려함(제목 표시줄, 창 경계는 고려되지 않음)
+
+====================================================================================
+cv2.imshow(winname, mat) -> None
+
+winname 영상 출력 대상 창이름 (문자열)
+mat 영상데이터(numpy.ndarray)
+
+참고사항
+간혹 mat에 일반 정수값을 입력해도 오류가 나지는 않음. 하지만  정수값의 경우 255로 나누고 실수형인 경우는 255를 곱해서 출력 -> 정수값으로 변형 해서 출력 ) 즉, 이상하게 출력될것인데 반드시 uint8로 주는게 좋다.
+type 변환 함수로 화면에 uint8로 주는게 안전하다. (해결방법)
+
+
+uint16,int32 자료형 행렬의 경우, 행렬 원소값을 255로 나눠서 출력
+float32.float64 자료형 행렬의 경우, 행렬 원소값에 255를 곱해서 출력
+만약 winname에 해당하는 창이 없으면 창을 새로 만들어서 영상을 출력
+windows 운영체제에서는 컨트롤 c amd v 지원
+실제로는 cv2.waitKey() 함수를 호출해야 화면에 영상이 나타남
+
+여기서 namedWindow 뒤에 있는 imshow는 전좌가 없어도 실행가능하지만 수정이 안됨. 그래서 큰 사진은 받아서 하는게 맞음.
+또한 waitKey가 없으면 출력이 되지도않음.
+======================================================================================
+
+cv2.waitKey(delay=None) -> retval
+
+delay: 밀리초 단위 대기 시간.delay<= 0 이면 무한히 기다림. 기본값은 0
+retval 눌린 키 값(ASCII code). 키가 눌리지않으면 -1
+
+여기서 특정 키의 값을 확인하려면 ord() 함수 사용
+while True:
+	if cv2.waitKey() == ord('q')
+		break;
+		
+===========================================================================================
+
+imread로 그냥불러오면 RGB순서의 컬러데이터 예상
+정상 출력하려면 cv2.cvtColor() 함수로 GBR 순서를 RGB로 바꿔서 출력해야함.
+그레이 스케일은
+plt,imshow() 함수에서 컬러맵을 cmap='gray'으로 지정해서 불러야함.
+
+===============================================================
+특정 폴도에 있는 이미지파일 목록 읽기
+
+os.listdir()
+
+import os
+
+file_list = os.listdir('.\\images')
+img_files = [file for file in file_list if file.endswith('.jpg')]  //그중 jpg만
+
+glob.glob() //특정 패턴의 문자형으로 된걸 다 불러옴
+
+import glob
+img_files = glob.glob('.\\image\\*.jpg) //이미지 폴더중에 모든 jpg

@@ -1,0 +1,232 @@
+충북대 로스 1 강의
+
+ctrl Shift O  위아래
+ctrl Shift E 좌우
+ctrl Shift W 화면닫기
+Alt 방향키 화면이동
+ctrl Shift F 검색
+1교시
+
+44. 78 가져가기
+
+로봇하나 움직이기-
+ 
+ 
+ roscore = 대기상태 (호수하나가 열렸다)
+ 다른 터미널을 열어서 Hokuyo라는 오픈소스를 열어서 실행한다
+ 그럼 roscore안에 생성 
+ ROS 주요 명령어.
+*** roscd   // 폴더 옮겨다닐때 (터미널) - ros는 패키지가 있는곳으로 이동.
+* rosls   //ros 패키지 파일목록확인
+* rosed   //ros 패키지파일편집
+* roscp   //ros 패키지의 파일복사
+ rospd  //ros 디렉터리 인덱스에 라이브러리추가
+ rosd //ros 디렉터리 인덱스 확인.
+ 
+ *** roscore 무언가의 토픽 정보 명령어를 가져갈수있는 존재
+ *** rosrun 노드 실행 // rosrun 패키지이름 노드이름.
+ *** roslaunch 여러개 실행 및 실행옵션 설정
+ ** rosclean ros파일을 검사하거나 삭제. 로스로깅파일 에러가 많아지면 이거사용 
+ ctrl + H 숨겨진파일 보기. 여기서 .ros라고 저장되어있음.
+ 
+*** rostopic //토픽 정보확인  rostopic -h 모든정보
+*** rosservice 로스서비스 정보확인
+*** rosbode 노드정보확인
+*** rosparam 파라미터 정보확인 수정
+*** rosbag //영상및 파라미터정보 얻어서 메세지기록, 재생   로봇파일 다읽어서 나중에 디버깅할수있게.
+** rosmsg //로스 메세지 정보확인
+** rossrv //ros 서비스정보 확인
+* rosversion //로스 패키지 및 배포릴리즈 버전정보 확인
+ roswtf // ros 시스템검사
+ 
+ bulid devel logs src 있는데 나중에 clean할때 devel.backup도 지워줘야함 (여기 남아있음)
+ 
+ 
+ 
+ 
+ 
+ devel - lib - 노드
+ 
+src ROS101 hello_world_ros lib 코드에는 노드에 사용하지 않는 코드들.
+CMakeLists **** 중요 
+항상 라이브러리 설치시 경로, 미리 설치된 라이브러리랑 꼬일일이 없으려나 확인 **
+ format.sh ///.clang-format -- C언어 코딩시 편하게 메크로느낌 코드 깔끔하게 정리해줌.
+ 
+ 
+ 명령어들 확인 hello.world에 cmake 리스트 등등 
+ helloworld.ros 실행.
+ 
+ ctrl R
+ history 10 10개보여주기
+ 
+ class 선언해서 객체로 
+ 객체 다음 메인루프에서 돌려주는데 필요한거 두가지
+ 
+spinOnce();  los 코어에서 사용하느걸 한번씩 갱신되는거 확인해주는거
+loopRate.sleep();  위쪽에 Rate가 적당하게 맞추게. ex> Rate loopRate(5)
+                                                     5까지만 올리고 더 올라가면 내려가고 유지시켜줌
+roslaunch hello_world_ros hello_world_node.launch^C
+
+
+(외부장치의 드라이브를 설치할때는 장비를 연결하지 않은상태에서 함)
+sudo apt-get install xboxdrv
+
+sudo xboxdrv --detach-kernel-driver --silent
+
+sudo apt-get install ros-noetic-joy
+
+rosrun joy joy_node _input:=/dev/input/js0
+
+rostopic -h 정보뜸
+rostopic echo /joy
+
+jstest 안뜬다 하면
+jstest-gtk-install 구글링해서 다운로드
+
+수업
+
+노드는
+클래스 (기능별로 묶어버림 왜냐 쓰다가 따로뺴서 또 써도됨)여러개 묶은걸 최소화한거라고 생각하자! (우리는)
+
+package
+하나 이상의 노드로 노드실행을위한 묶어놓은 런치파일느낌
+
+Message
+노드간의 데이터주고받게 
+opt los 뭐시기에 코드있음 *******************************
+
+roscpp -ros기본 라이브러리
+ros::init --노드이름 설정 (겹치면안돼)
+
+ros::NodeHandel -- init 다음 선언되는데 rose
+
+config --- mainclass -----A클래스/B클래스/C클래스
+
+include <std_msgs/Float32MultiArray.h> 
+(std_msgs/String.h>
+<ros/ros.h>
+
+변수명 정할때 JaeEun
+프라이빗 변수 JaeEun_
+int 는n붙히고 Counter_; 
+
+String 쓰려면 stdIn.c_str(); 쓰더라.ㅋ;
+
+roslaunch 이름 노드런치
+
+rqt 쓰고 port가면 그래프나옴
+
+
+서비스 기능
+
+rosservice call /clear "{}"
+
+거북이 길 지우기
+
+rosservice call /tutle1/teleport_absolute "x: 10.0^C
+
+rosservice list 
+
+roslauch 
+rosparam// -h로 확인
+rosparam list -- 파라미터 선언되어있음
+rosparam set /mission_
+rosparam set /mission_perf_status true or fulse
+rosparam set /case_selection1
+
+특정서버 만들고. 클라이언트 선언하고 클라이언트가 서버를 받으면됨
+
+rosrun turtlesim turtlesim
+roslanch turtlesim_joy_c
+
+js뒤에 숫자확인
+cb빌드후에 ㄱㄱ
+
+Action 그냥 코드봄.
+//
+액션짤때는 callback 을 많이 이용한다.
+노에틱3개
+ros런치 act_test_ros act_test_ros_node
+advanced 서버 실행?;;
+로스런 act_test_ros actionlib _advanced_client_cpp_test_ros_node 3
+로스런 act_test_ros 2
+노에틱
+로스param list
+act_test_ros actionlib _advanced_client_c_test_ros_node
+
+rosaction list
+rosservice list
+rosrun act_test_ros actionlib_basic_client_test_ros_node
+//
+
+Custom Msg - msg에 커스텀한 메세지 만들어줘야함
+                   #디파인이 싫고하면 
+                    Define.msg로 만들어서 설정해도됨
+                    
+                    
+cmakes        genmsg/ message_generation 메세지전달시 (두개를 꼭씀_)
+
+add_action_files
+Averaging
+Fib         두개 꼭필요 버그?
+
+read Param.cpp 에 있음
+mynteye_img_logger_lib.h_ros101
+32~33 번쨰줄 변수 여러가지 받을때 동시에 들어올때만 처리해라고 선언해줘야함.
+****
+
+부수적인 문법은 44~47    
+ 22 -> 10적은건 10hz로 제한시켜서 4개가 여기에 맞으면 출력
+ sync_sub  **  ROS!01 쓸때 여기 중요 위에내용.
+ 
+ main.cpp - ROS101
+ 
+ 구글 test 그거랑 연결시켜서 제공했음
+ ros_gtest_example
+ 
+ rosrun ros_gtest_example ros_gtest_example_node
+ 
+ rosrun ros_gtest_example ros_gtest_example_lib_utest
+ 
+ 테스트 코드를짜고 테스트에 성공하는 코드를 계속 짜서 구글테스트
+ 
+ 테스트 케이스 (중요 **)  구글Test 공부하자!
+ cmake에 gtest 중요
+/// c언어와 c++ 차이점
+c- 한줄한줄 하향식 설계방식
+if문 최소한으로 사용  (switch case 구문활용)
+C++ = 케이스를 먼저 (목적을 먼저정하고 클래스를 정해주는걸 1순위)
+
+2,4,5,6 교양 들어야함
+현재 6. 예비수강신청해둠
+총 1,3,6
+
+24 ************** Cpp_class
+컨테이너+반복자+알고리즘
+중요 vector 컨테이너
+    컨테이너 
+    {
+    반복자(begin ,end)
+    }
+    sort()
+    
+String은 문자열을 더할수있게해줌
+추출도가능 중간에 찾기도가능
+tuple (두개이상 출력값 받아올때)
+
+그림으로 이해하는 C , C++
+1) 터미널1
+
+ros2 run demo_nodes_cpp talker
+2) 터미널2
+
+ros2 run demo_nodes_py listener
+간단 예제
+
+로스 
+DDS
+px4 소프트웨어 ( uORB topic ) 
+로스1 브릿지 사용 * ( 로스1에 코드를 잘 짜서 로스 2에 전송시켜 사용가능)]
+로스 2 객체지향성 파이썬
+로스 1 상용화가 많이 되어있으니까  c,c++로 하다가 
+이제 로스 2

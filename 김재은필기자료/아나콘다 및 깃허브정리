@@ -1,0 +1,95 @@
+소프트웨어 통합..
+초기 썻던코드는 SD카드 인식이 안됐음.
+그래서 다시 갈아업고 하나씩 코드를 추가할예정
+처음에는 SD카드 인식부터 시작을 해보자!
+
+깃 토큰d
+
+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
+
+git init
+git add .
+git status (파일 올라갔는지 확인)
+git commit -m "(파일명)"
+git remote add origin 깃허브주소
+git push -u origin main or master
+git log (커밋확인)                //git log --oneline 한줄로 출력됨
+git log -p 패치된거 확인
+git tag "버전"
+git commit 변경 메세지 같은거 적을수있음 :w 컨트롤 이용해서 사용
+git log --branch (모든 커밋확인)
+git log --oneline 이후 앞에적혀있는 3213Efdc이런게 커밋임.
+git tag v0.0.0 (커밋)
+git tag list
+git tag --delete (태그 삭제)
+git diff 최근 커밋과 작업 디렉토리 비교
+git diff --staged 전체비교
+git dif <커밋>,<커밋> 커밋끼리 비교 커밋보려면 git log --oneline
+git <기준브런치> <비교브런치>
+git reset --soft(커밋) 커밋으로 되돌아가기
+git revert 취소하고 새로운 커밋으로 추가
+git branch - 브랜치의 목록
+git branch foo 푸라는 브랜치 만들기
+git checkout foo 푸라는 브랜치로 작업환경 바꾸기
+git merge foo 푸라는 브랜치 병합시키기 마스터에
+git rebase master //브랜치 속으로 들어와서 대장만들어줌
+git branch -d 이름 
+
+원격 저장소 추가,조회,제거
+추가 - 330p
+원격 저장소 이름바꾸기 git remote rename (기존이름 ) (바꿀이름)
+원격 저장소 삭제 git remote remote 이름
+확인법) git remote
+
+git에서는 main이 주되어있기에 git branch -M main으로 바꾸어줌 (master -> main)
+
+한번하면 걍 git push 
+파일 옮기기 mv 파일명 ./파일경로
+
+
+
+
+
+
+
+
+
+
+
+아나콘다
+버전확인, 업데이트
+conda --version // conda update conda
+가상환경 생성
+conda create --name 가상환경명
+파이썬 같이 생성
+conda create --name 환경명 python=버전 
+python 버전확인법은 python3 치면됨
+
+활성화 비활성화
+conda activate 가상환경이름 .//deactivate
+
+
+가상환경 리스트확인법
+conda info --envs
+
+패키지 설치법
+conda install 패키지명
+확인
+conda list
+
+가상환경 삭제
+conda remove --name 가상환경명 --all
+
+
+
+아나콘다 텐서플로우 사용
+conda create --name thesorlow python=3.9.12 tensorflow
+
+jupyter Notebook 사용법
+activate 가상환경명 쓰고 pip install jupyter
+실행방법 jupyter notebook
+
+현재 생성된 가상환경 VUASRL (파이썬 3.9.12)
+ tensorlow // jupyter
+ 
+ 

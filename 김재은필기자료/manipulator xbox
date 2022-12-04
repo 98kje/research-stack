@@ -1,0 +1,6 @@
+roscore
+sudo xboxdrv --detach-kernel-driver --silent^C
+rostopic echo /gripper/kinematics_pose 
+roslaunch teleop_twist_joy teleop.launch 
+roslaunch open_manipulator_teleop open_manipulator_teleop_joystick.launch 
+

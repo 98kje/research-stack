@@ -1,0 +1,37 @@
+아나콘다
+버전확인, 업데이트
+conda --version // conda update conda
+가상환경 생성
+conda create --name 가상환경명
+파이썬 같이 생성
+conda create --name 환경명 python=버전 
+python 버전확인법은 python3 치면됨
+
+활성화 비활성화
+conda activate 가상환경이름 .//deactivate
+
+
+가상환경 리스트확인법
+conda info --envs
+
+패키지 설치법
+conda install 패키지명
+확인
+conda list
+
+가상환경 삭제
+conda remove --name 가상환경명 --all
+
+
+
+아나콘다 텐서플로우 사용
+conda create --name thesorlow python=3.9.12 tensorflow
+
+jupyter Notebook 사용법
+activate 가상환경명 쓰고 pip install jupyter
+실행방법 jupyter notebook
+
+현재 생성된 가상환경 VUASRL (파이썬 3.9.12)
+ tensorlow // jupyter
+ 
+ 
