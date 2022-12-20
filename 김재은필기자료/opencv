@@ -121,4 +121,225 @@ import cv2
 img1 = cv2.imread('cat.bmp', cv2.IMREAD_GRAYSCALE)
 img2 = cv2.imread('cat.bmp', cv2.IMREAD_COLOR)
 
-sdads
+img1, 2는 numpy.ndarray로 저장된다.
+ndim: 차원수 .len(img.shape)와 같다. 2면 그레이 스케일, 3이면 컬러라고 판단.
+shape : 각 차원의 크기 (h,w) 그레이스케일, (h,w,3) 컬러영상.
+size : 전체 원소 개수
+dtype:원소의 데이터 타입. 영상 데이터는 uint8. 
+
+그레이 스케일영상 : cv2.CV_8UC1 -> numpy.uint8, shape = (h, w)
+컬러영상         : cv2.CV_8UC3 -> numpy.uint8, shape = (h, w, 3)
+
+영상의 속성 참조예제
+for y in range(h): #파이썬은 이런함수가 되게 느리게 작동함.
+    for x in range(w):
+        img1[y, x] = 0
+        img2[y, x] = (0, 255, 255)  #값을 집어넣음   
+
+다른 방식으로는 
+img1[:,:] = 255
+img2[:,:] = (0, 0, 255) #이 함수를 많이 사용함.
+
+========================================================================
+지정한 크기로 새 영상 생성하기.
+numpy.empty(shape, dtype = float, ) -> arr     //임의의 값으로 초기화된 배열을 생성한다
+numpy.zeros(shape, dtype = float, ) -> arr     // 0으로 최고환된 배열을 생성
+numpy.ones(shape, dtype = None, ) -> arr	 // 1로 초기화된 배열을 생성
+numpy.full(shape, fill_value, dtype = None, ) -> arr  //fill_value로 초기화된 배열을 생성1
+
+shape: 각 차원의 크기.(h,w) 또는 (h,w,3)
+dtype: 원소의 데이터 타입. 일반적인 영상이면 numpy.uint8 지정
+arr  : 생성된 영상(numpy.ndarray)
+
+============================================================
+ROI (Region of interest) 관심영역
+영상에서 특정 연산을 수행하고자하는 임의의 부분 영역
+
+마스크 연산
+-OpenCV는 일부 함수에 대해 ROI 연산을 지원함, 이때 마스크 영상을 인자로 함께 전달해야함.
+e.g ) cv2.copyTo(), cv2.calcHist(),cv2.bitwise_or(), cv2.matchTemplate()
+
+거의 그레이 스케일 영상으로 만들어서 사용하지만 실제로는 0이 아닌 위치에서만 연산이 수행됨.
+(사람의 눈으로는 0과 1의 차이가 거의없기에) 마스크 영상으로는 0~ 255로 구성된 이진영상(binary image)를 사용
+
+마스크연산을 지원하는 픽셀값 (복사 함수)
+cv2.copyTo(src, mask, dst=None) -> dst    // 전체가 아닌 마스크 영상에서 (흰색으로 되어있는) 부분을 복사 
+
+src: 입력영상 
+mask: 마스크영상 cv.2.CV_8U.(numpy.uint8) 0이 아닌 픽셀에 대해서만 복사 연산을 수행
+dst: 출력영상 만약 src와 크기 및 타입이 같은 dst를 입력으로 지정하면 dst를 새로 생성하지 않고 연산 수행 그렇지 않으면 -> dst를 새로 생성하여 연산을 수행후 반환
+
+여기서 src와 mask와 dst는 사이즈가 같아야하고 
+src가 dst는 컬러면 컬러 그레이면 그레이
+하지만 mask는 무조건 그레이스케일
+
+여기서 numpy로 진행한다하면
+dst[mask > 0 ] = src[mask >0 ] 0보다 크면 이제 dst에 저장 입력- 출력의 부분과 동일.
+
+=================================
+OpenCV 그리기 함수.
+
+OpenCV는 영상에 선, 도형, 문자열을 출력하는 그리기 함수를 제공한다.
+선 그리기: 직선, 화살표, 마커등
+도형 그리기: 사각형, 원, 타원, 다각형 등
+문자열 출력
+
+그리기 함수 사용시 주의
+- 그리기 알고리즘을 이용하여 영상의 픽셀 값 자체를 변경
+-> 원본 영상 필요시 복사본 만들어서 그리기 & 출력
+
+-그레이 스케일 영상에는 컬러로 그리기 안된다.
+cv2.cvrColor()함수로 BGR컬러 영상으로 변환한 후 그리기 함수 호출
+
+#직선 그리기 함수 *
+cv2.line(img,pt1, pt2, color, thinkness = None, lineType= None, shift= None) -> img
+
+img: 그림을 그릴 영상 //입력과 리턴값으로 이용
+pt1,pt2: 직선의 시작점과 끝점
+color: 선 색상 또는 밝기. (B,G,R) 튜플 또는 정수값.
+thinkness: 선 두께, 기본값은 1
+lineType: 선 타입, cv2.LINE_4, cv2.LINE_8, cv2.LINE_AA(조금 부드러운 선을 그리고싶을때) 중 선택.
+ 									기본값은 cv2.LINE_8
+shift: 그리기 좌표 값의 축소비율. 기본값은 0 
+
+#사각형 그리기 함수*
+cv2.rectangle(img, pt1, pt2, color, thinkess = None, lineType=None, shift=None) -> img
+cv2.rectangle(img, rec, color, thinkess = None, lineType=None, shift=None) -> img
+
+
+img: 그림을 그릴 영상
+pt1,pt2: 사각형의 두 꼭지점 x,y 좌표값 튜플
+rec:사각형 위치정보.(x,y,w,h)튜플
+color: 선 색상 또는 밝기.(B,G,R) 튜플 또는 정수값.
+thickness: 선 두께. 기본값은 1. 음수(-1)를 지정하면 내부를 채운다.
+lineType: 선 타입. cv2.LINE_4,cv2.LINE_8,cv2.LINE_AA중 선택. 기본값은 cv2.LINE_8
+shift: 그리기 좌표 값의 축소비율. 기본값은 0
+
+
+#원 그리기 함수############33
+cv2.circle(img, center, radius, color, thickness=None, lineType=None, shift=None) -> img
+
+img:그림을 그릴 영상
+center: 중심좌표
+radius: 원 반지름
+color: 선 색상 또는 밝기(B,G,R) 튜플 또는 정수값.
+thickness: 선 두께. 기본값 1 음수(-1)를 지정하면 내부를 채워줌.
+lineType: 선 타입. cv2.LINE_4,cv2.LINE_8,cv2.LINE_AA중 선택. 기본값은 cv2.LINE_8
+shift: 그리기 좌표 값의 축소비율. 0 기본값은
+
+#다각형 그리기 함수 #############
+cv2.polylines(img,pts,isClosed,color,thickness=None,lineType=None,shift=None) -> img
+
+img:그림을 그릴 영상
+pts: 다각형 외각 점 들의 좌표 배열. numpy,ndarray의 리스트.
+(e,g,)[np.array([10,10],[50,50],[10,50]],dtype=np.int32)]
+isClosed: 폐 곡선 여부. True 또는 False 지정.
+color: 선 색상 또는 밝기(B,G,R) 튜플 또는 정수값.
+thickness: 선 두께. 기본값 1 음수(-1)를 지정하면 내부를 채워줌.
+lineType: 선 타입. cv2.LINE_4,cv2.LINE_8,cv2.LINE_AA중 선택. 기본값은 cv2.LINE_8
+shift: 그리기 좌표 값의 축소비율. 0 기본값은
+
+##문자열 출력 함수 ##############
+cv2.putText(img, text, org, fontFace, fontScale, color, thinckness=None, lineType= None. bottomLeftOrigin =None) -> img
+
+img:그림을 그릴 영상
+text: 출력할 문자열
+orgL: 영상에서 문자열을 출력할 위치의 좌측 하단 좌표.
+fontFace: 폰트종류. cv2.FONT_HERSHEY_로 시작하는 상수중 선택 SIMPLEX,PLAIN,DUPLEX,COMPLEX,TRIPLEX,SMALL,등등 fontFace 상수라고 찾으면 될듯
+fontScale: 폰트 크기 확대/ 축소 비율
+color: 선 색상 또는 밝기(B,G,R) 튜플 또는 정수값.
+thickness: 선 두께. 기본값 1 음수(-1)를 지정하면 내부를 채워줌.
+lineType: 선 타입. cv2.LINE_4,cv2.LINE_8,cv2.LINE_AA중 선택. 기본값은 cv2.LINE_8
+bottomLeftOrigin: True이면 영사의 좌측 하단을 원점으로 간주. 기본
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+openCV에서 카메라와 동영상 처리하기.
+
+카메라와 동영상으로 부터 프레임을 받아오는 작업을
+cv2.VideoCapture 클래스 하나로 처리한다.
+
+#큰틀
+open()카메라를 열거나 영상을열기 -> read() 받아오는 영상을 ndarray로 받아옴.
+
+##카메라 열기
+cv2.VideoCapture(index, apiPreference=None) -> retval  ##정수 값은 0부터 시작 컴퓨터의 기본카메라. 장치관리자에 등록되는 순서임. 
+index : camera_id + domain_offset_id 시스템 기본 카메라를 기본 방법으로 열려면 index에 0을 전달.
+apiPreference: 선호하는 카메라 처리 방법을 지정
+retval: cv2.VideoCapture 객체
+
+cv2.VideoCapture.open(index, apiPreference=None) -> retval
+retval : 성공하면 True, 실패하면 False
+##비디오 캡쳐가 준비되었는지 확인
+cv2.VideoCapture.isOpened() -> retval 
+retval : 성공하면 True, 실패하면 False (for, while루프로 확인)
+
+##프레임 받아오기
+cv2.VideoCapture.read(image=None) -> retval, image
+retval : 성공하면 True, 실패하면 False (for, while루프로 확인)
+image: 현재 프레임(numpy.ndarray)
+
+
+##카메라, 비디오 장치 속성 값 참조
+cv2.VideoCapture.get(propId) -> retval
+
+propid: 속성함수
+CAP_PROP_FRAME_WIDTH  프레임 가로크기
+CAP_PROP_FRAME_HEIGHT 프레임 세로크기
+CAP_PROP_FPS 	       초당 프레임 수
+CAP_PROP_FRAME_COUNT  비디오 파일의 총 프레임 수
+CAP_PROP_POS_MSEC     밀리초 단위로 현재 위치
+CAP_PROP_POS_FRAMES   현재 프레임 번호
+CAP_PROP_EXPOSURE     노출
+이 외에도 VideoCapture 쪽 오픈CV에 더 많은게 있음.
+
+retval: 성공하면 해당속성 값, 실패하면 0
+
+##cv2.VideoCapture.set(propid.value) -> retval
+propid: 속성함수
+value: 속성값
+retval: 성공하면 True, 실패하면 False
+ 
+ ##동영상,정지 영상 시퀀스, 비디오 스트림 열기##
+cv2.VideoCapture(filename, apiPreference=None) -> retval ## 카메라와 다른점은 filename이 들어간다.
+filename : 
+apiPreference: 선호하는 카메라 처리 방법을 지정
+retval: cv2.VideoCapture 객체
+
+cv2.VideoCapture(filename, apiPreference=None) -> retval
+retval : 성공하면 True, 실패하면 False
+
+////////////////////////////////////////////////////////////
+동영상 파일 생성하기. 
+
+cv2.VideoWriter 클래스
+일련의 프레임을 동영상 파일로 저장할 수 있다.
+프레임은 모두 크기와 데이터 타입이 같아야한다.
+
+Fourcc (4문자코드, four character code) //어떤 압축방식을 사용할 것인가.
+동영상 파일의 코덱, 압축 방식, 색상, 픽셀 포맷 등을 정의하는 정수 값
+cv2.VideoWriter_fourcc(*'DIVX') DIVX MPENG-4 코덱
+cv2.VideoWriter_fourcc(*'XVID') XVID MPENG-4 코덱
+cv2.VideoWriter_fourcc(*'FMP4') FFMPEG MPENG-4 코덱
+cv2.VideoWriter_fourcc(*'X264') H.264/AVC 코덱
+cv2.VideoWriter_fourcc(*'MJPG') Motion-JPEG 코덱 더많은 코덱들이 있음.
+
+#저장을 위한 동영상 파일 열기.
+cv2.VideoWriter(filename, fourcc, fps, frameSize, isColor=None) -> retval
+
+filename: 비디오 파일 이름(e.g. 'video.mp4')
+fourcc: fourcc (e.g. cv2.VideoWirter_fourcc(*'DIVX'))
+fps:	초당 프레임 수 (e.g. 30)
+frameSize: 프레임 크기(e.g. [640, 480])
+isColor: 컬러 영상이면 True, 그렇지않으면 False.
+retval: cv2.VideoWriter 객체
+
+cv2.VideoWriter.open(filename, fourcc, fps, frameSize, isColor=None) -> retval
+retval: 성공하면 True, 실패하면 False.
+
+##비디오 파일이 준비되었는지 확인
+cv2.VideoWriter.isOpened() -> retval
+retval: 성공하면 True, 실패하면 False.
+
+##프레임 저장하기
+cv2.VideoWriter.write(image) -> None
+image: 저장할 프레임(numpy.ndarray)
