@@ -343,3 +343,79 @@ retval: 성공하면 True, 실패하면 False.
 ##프레임 저장하기
 cv2.VideoWriter.write(image) -> None
 image: 저장할 프레임(numpy.ndarray)
+
+### 키보드 입력 대기 함수
+cv2.waitkey(delay=None) -> retval
+
+delay: 밀친초 단위 대기 시간. delay <= 0 이면 무한히 기다림. 기본값은 0.
+retval: 눌린 키 값 (ASCII code). 키가 눌리지 않으면 -1.
+
+참고사항 
+waitKey() 함수는 OpenCV 창이 하나라도 있을 때 동작함
+특정 키 입력을 확인하려면 ord() 함수를 이용.
+ex) while True:
+	if cv2.waitkey() == ord('d'):
+		break
+		
+주요 특수 키 코드: 27(ESC), 13(ENTER), 9(TAB)
+
+특수키 사용시 cv2.waitKeyEx() 윈도우에서만 
+
+### 마우스 이벤트 처리하기.
+
+cv2.setMouseCallback(windowName, onMouse, param=None) -> None
+
+windowName : 마우스 이벤트 처리를 수행할 창 이름.
+param : 콜백 함수에 전달할 데이터
+onMouse: 마우스 이벤트 처리를 위한 콜백 함수 이름.
+	 마우스 이벤트 콜백 함수는 다음 형식을 따라야한다.
+	 ex) onMouse(event, x, y, flags, param) -> None
+	 
+	     event : 마우스 이벤트 종류. cv2.EVENT_로 시작하는 함수 (마우스 좌우클릭,움작이기. 휠) 12개가 있는데 ex) cv2.EVENT_MOUSEMOVE -> 상수값으로 0임.
+	     x,y: 마우스 이벤트 발생 좌표 (내가 띄운 창의 상대적인 좌표)
+	     flags: 마우스 이벤트 발생 시 상태. cv2.EVENT_FLAG_로 시작하는 상수 // ex)  cv.EVENT_FLAG_LBUTTON -> 1임 대신 얘는 1 ,2 ,4 ,8, 16, 32 등등 있음
+	     param: cv2.setMouseCallback() 함수에서 설정한 데이터.
+
+## 트랙바 사용방법.
+
+트랙바? 프로그램 동작 중 사용자가 지정한 범위 안의 값을 선택할 수 있는 컨트롤
+OpenCV 에서 제공하는 그래픽 사용자 인터페이스
+
+트랙바 생성 함수.
+cv2.createTrackbar(trackbarName, windowName, value, count, onChange) -> None
+
+trackbarName: 트랙바 이름
+windowName: 트랙바를 생성할 창 이름.
+value: 트랙바 위치 초기값.
+count: 트랙바 최댓값, 최솟값은 항상 0.
+onChange: 트랙바 위치가 변경될 때마다 호출할 콜백 함수 이름.
+
+	트랙바 이벤트 콜백함수는 다음 형식
+		onChange(pos) -> None
+
+#연산 시간 측정 방법.
+컴퓨터 비전은 대용량 데이터를 다루고, 일련의 과정을 통해 최종 결과를 얻으므로 매 단계에서 연산 시간을 측정하여 관리할 필요가 있음.
+
+OpenCV 에서는 TickMeter 클래스를 이용하여 연산 시간을 측정.
+cv2.TickMeter() -> tm
+
+tm : cv2.TickMeter 객체
+tm.start(): 시간 측정시작.
+tm.stop() : 시간 측정 끝.
+tm.reset(): 시간 측정 초기화.
+
+tm.getTimeSec(): 측정 시간을 초 단위로 변환
+tm.getTimeMilli(): 측정 시간을 초 단위로 변환
+tm.getTimeMicro() : 측정 시간을 초 단위로 변환
+
+예제 코드.
+img = cv2.imread('hongkong.jpg')
+im = cv2.TickMeter()
+tm.start()
+
+edge = cv2.Canny(img, 50, 150)
+
+tm stop()
+print('Elapsed time: {}ms.' .format(tm.getTimeMilli()))
+
+
