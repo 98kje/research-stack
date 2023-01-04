@@ -1,0 +1,144 @@
+# 영상의 화소 처리 기법
+
+dst(x,y) = f(src(x,y)) // src - source image, dst -destination image (입력, 출력)
+(밝기 조절)
+
+dst(x,y) = src(x,y)+n #밝기 조절 수식 --> dst(x,y) = saturate(src(x,y)+n)
+y = x + n
+
+영상의 밝기 조절을 위한 영상의 덧셈 연산
+cv2.add(src1, src2, dst=None, mask=None ,dtypeNone) -> dst
+
+---src1에 입력영상 src2에 정수값넣는 방식
+src1 : (입력) 첫 번째 영상 또는 스칼라
+src2 : (입력) 두 번째 영상 또는 스칼라
+dst:   (출력) 덧셈 연산의 결과 영상
+mask: 마스크 영상
+dtype : 출력 영상(dst)의 타입.(e.g) cv2.CV_8U, cv2.CV_32F 등
+
+참고사항 *
+스칼라(Scalar)는 실수 값 하나 또는 실수 값 네 개로 구성된 듀플
+dst를 함수 인자로 전달하려면 dst의 크기가 src1, src2와 같아야 하며, 타입이 적절하게
+
+
+# 영상의 산술 연산
+덧셈 연산 - dst(x,y) = saturate(srcl(x,y) + src2(x,y))
+두 영상의 같은 위치에 존재하는 픽셀 값을 더하여 결과 영상의 픽셀 값으로 설정
+덧셈 결과가 255보다 크면 픽셀 값을 255로 설정 (포화 연산)
+
+가중치 합
+dst(x,y) = saturate(a * srcl(x,y) + B * src2(x,y))
+보통 a + B의 값이 1이 되도록 설정 -> 두 입력 영상의 평균 밝기를 유지
+
+cv2.addWeighted(src1, alpha, src2, beta, gamma, dst=None, dtype=None) -> dst
+src1 : 첫 번쨰 영상
+alpha: 첫 번째 영상 가중치
+src2 : 두 번째 영상. src1과 같은 크기 & 같은 타입
+beta : 두 번째 영상 가중치
+gamma: 결과 영상에 추가적으로 더할 값
+dst  : 가중치 합 결과 영상
+dtype: 출력 영상(dst)의 타입
+
+뺄셈 연산 = 한 부분을 두각하여 표현할때 사용함
+cv2.subtract(src1, src2, dst=None, dtype=None) -> dst
+src1 : 첫 번쨰 영상 또는 스칼라
+src2 : 두 번째 영상 또는 스칼라
+dst  : 뺄셈 연산 결과 영상
+dtype: 출력 영상(dst)의 타입
+
+차이 연산 = 변화가 있는 부분을 파악하고자 할때 사용
+cv2.absdiff(src1, src2, dst=None) -> dst
+src1 : 첫 번쨰 영상 또는 스칼라
+src2 : 두 번째 영상 또는 스칼라
+dst  : 차이 연산 결과 영상(차영상)
+
+영상의 논리 연산)
+
+비트단위 AND, OR, XOR, NOT
+
+cv2.bitwise_and(src1, src2, dst=None, mask=None) -> dst
+cv2.bitwise_or(src1, src2, dst=None, mask=None) -> dst
+cv2.bitwise_xor(src1, src2, dst=None, mask=None) -> dst
+cv2.bitwise_not(src1, dst=None, mask=None) -> dst
+
+src1: 첫 번째 영상 또는 스칼라
+src2: 두 번쨰 영상 또는 스칼라
+dst: 출력 영상
+mask: 마스크 영상
+
+참고사항*
+각각의 픽셀 값을 이진수로 표현하고, 비트(bit)단위 논리 연산을 수행
+
+#기본적인 영상 처리 기법
+
+(색상) 채널 분리
+cv2.split(m, mv=None) -> dst
+
+m: 다채널 영상(e.g)(B,G,R)로 구성된 컬러 영상
+mv: 출력 영상
+dst: 출력 영상의 리스트
+
+(색상) 채널 결합
+cv2.merge(m, dst=None) -> dst
+
+mv: 입력 영상 리스트 또는 튜플
+dst: 출력 영상
+
+색 공간 변환 함수
+cv2.cvtColor(src, code, dst=None, dstCn=None) -> dst
+
+src: 입력 영상
+code: 색 변환 코드 
+ex) cv2.COLOR_BGR2GRAY / cv2.COLOR_GRAY2BGR  = BGR <-> GRAY
+    cv2.COLOR_BGR2RGB  / cv2.COLOR_BGR2BGR   = BGR <-> RGB
+    cv2.COLOR_BGR2HSV  / cv2.COLOR_HSV2BGR   = BGR <-> HSV (H = 색종류 / S = 채도 /V = 명도)
+    cv2.COLOR_BGR2YCrCb/ cv2.COLOR_YCrCb2BGR = BGR <-> YCrCb
+dstCn : 결과 영상의 채널 수. 0이면 자동고정
+dst : 출력 영상
+
+
+# 히스토그램 분석
+히스토그램 -> 영상의 픽설 값 분포를 그래프의 형태로 표현한 것
+
+cv2.calcHist(images, channels, mask, histSize, ranges, hist=None, accumulate=None) -> hist
+
+images : 입력 영상 리스트
+channels: 히스토그램을 구할 채널을 나타내는 리스트
+mask   : 마스크 영상. 입력 영상 전체에서 히스토그램을 구하라면 None 지정.
+histSize: 히스토그램 각 차원의 크기(빈(bin)의 개수)를 나타내는 리스트
+ranges: 히스토그램 각 차원의 최솟값과 최댓값으로 구성된 리스트
+hist : 계산된 히스토그램(numpy.ndarray)
+accumulate: 기존의 hist 히스토그램에 누적하라면 Truexsz, 새로 만들려면 False
+
+#영상의 명암비 조절
+명암비 : 밝은곳과 어두운 곳 사이에 드러다는 밝기 정도의 차이
+
+dst(x,y) = (1+ alpha) src(x,y) - 128 * alpha 의 형식
+
+명암비를 자동으로 하는법
+결국 alpha값을 자동으로 조절
+
+cv2.normalize(src, dst, alpha=None, beta=None, norm_type=None, dtype=None, mask=None) -> dst
+src : 입력영상
+dst : 결과영상 =거의 None
+alpha: (노름 정규화인 경우) 목표 노름 값,
+	(원소 값 범위 정규화인 경우) 최솟값
+beta : (원소 값 범위 정규화인 경우) 최댓값
+norm_type: 정규화 타입. NORM_INF,NORM_L1, NORM_L2,NORM_MINMAX.
+dtype: 결과 영상의 타입
+mask : 마스크 영상
+
+# 히스토그램 평활화( 균일화, 평탄화 균등화)
+히스토그램이 그레이스케일 전체 구간에서 균일한 분포로 나타나도록 변경하는 명암비 향상 기법
+
+cv2.equalizeHist(src, dst=None) ->dst
+src : 입력 영상, 그레이스케일 영상만
+dst : 결과 영상
+
+스트레칭과의 차이점은 스트레칭 균일한 픽셀값이지만 평활화는 균일하지 않게 사진을 펴준다
+
+여기서 컬러영상을 equalize할떄는 R G B 각각 평활화 진행후 하나로합쳐 출력
+-) 이때는 색깔이 조금 바뀜 
+따라서 -> 입력영상을 분활을 하지만 Y(밝기정보) ,Cr, Cb (색상정보) y만 평활화 진행하여 합쳐서 출력
+-> 색깔 유지되며 명암비만 증가하는 결과를 얻음
+
